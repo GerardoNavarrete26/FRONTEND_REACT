@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import SuiteImage from '../../assets/Suite.jpg';
 import TainyImage from '../../assets/Tainy.jpg';
+import RvigenteImage from "../../assets/Rvigente.png";
+import RpendienteImage from "../../assets/Rpendientepago.png";
 import './ListaCabañas.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -28,18 +30,20 @@ const roomsData = [
   { number: "20", type: "tainycabin", status: "disponible", price: 160900, description: "Cabaña familiar 2 adultos 2 niños", image: TainyImage },
 ];
 
-
-
 // Componente de tarjeta de habitación
-const RoomCard = ({ room }) => {
+const RoomCard = ({ room, onCardClick }) => {
     return (
-      <div className="col-md-4 mb-4">
+      <div
+        className="col-md-4 mb-4"
+        onClick={() => onCardClick(room)} // Llama a la función para abrir el modal
+        style={{ cursor: "pointer" }}
+      >
         <div className="card">
-         <img src={room.image} className="card-img-top" alt={room.type} />
+          <img src={room.image} className="card-img-top" alt={room.type} />
           <div className="card-body">
             <h5 className="card-title">Habitación {room.number}</h5>
             <p className="card-text">
-              <strong>Tipo:</strong> {room.type === 'suite' ? 'Suite' : 'Tainy Cabin'}<br />
+              <strong>Tipo:</strong> {room.type === "suite" ? "Suite" : "Tainy Cabin"}<br />
               <strong>Precio:</strong> ${room.price.toLocaleString()} CLP<br />
               <strong>Estado:</strong> {room.status}<br />
               <strong>Descripción:</strong> {room.description}
@@ -62,64 +66,126 @@ const RoomCard = ({ room }) => {
     );
   };
   //---------------------------------------------------------------------
-  // Componente de listado de cabañas
-  const ListaCabañas = () => {
+ // Componente principal
+const ListaCabañas = () => {
     const [filters, setFilters] = useState({
-      type: 'all',
-      status: 'all',
-      search: ''
+      type: "all",
+      status: "all",
+      search: "",
     });
+  
+    const [selectedRoom, setSelectedRoom] = useState(null); // Estado para la cabaña seleccionada
+    const [showModal, setShowModal] = useState(false); // Controla si el modal está visible
+  
+  // Función para abrir el modal
+const handleCardClick = (room) => {
+    if (room.status === "disponible") {
+      setShowModal(false); // Asegurar que el modal no se abra si es disponible
+    } else {
+      setSelectedRoom(room); // Guarda la cabaña seleccionada
+      setShowModal(true); // Muestra el modal si el estado es distinto a disponible
+    }
+  };
+  
+    // Función para cerrar el modal
+    const handleCloseModal = () => {
+      setSelectedRoom(null); // Resetea la cabaña seleccionada
+      setShowModal(false); // Oculta el modal
+    };
+
+    
   
     // Función para actualizar los filtros
     const handleFilterChange = (filter, value) => {
       setFilters((prevFilters) => ({
         ...prevFilters,
-        [filter]: value
+        [filter]: value,
       }));
     };
   
     // Filtrar las habitaciones según los filtros
     const filteredRooms = roomsData.filter((room) => {
-      const matchesType = filters.type === 'all' || room.type === filters.type;
-      const matchesStatus = filters.status === 'all' || room.status === filters.status;
+      const matchesType = filters.type === "all" || room.type === filters.type;
+      const matchesStatus = filters.status === "all" || room.status === filters.status;
       const matchesSearch = room.number.includes(filters.search);
       return matchesType && matchesStatus && matchesSearch;
     });
-  // Vista al usuario
+  
     return (
-      <div>
-         <h1 className="text-center mb-4">Listado de Cabañas</h1>
+      <div className="container">
+        <h1 className="text-center mb-4">Listado de Cabañas</h1>
+  
         {/* Filtros */}
         <div className="d-flex justify-content-between mb-4">
-          <select className="form-select w-auto" onChange={e => handleFilterChange('type', e.target.value)}>
+          <select
+            className="form-select w-auto"
+            onChange={(e) => handleFilterChange("type", e.target.value)}
+          >
             <option value="all">Todos los Tipos</option>
             <option value="tainycabin">Tainy Cabin</option>
             <option value="suite">Suite</option>
           </select>
-          <select className="form-select w-auto" onChange={e => handleFilterChange('status', e.target.value)}>
+          <select
+            className="form-select w-auto"
+            onChange={(e) => handleFilterChange("status", e.target.value)}
+          >
             <option value="all">Todos los Estados</option>
             <option value="disponible">Disponible</option>
             <option value="ocupado">Ocupado</option>
             <option value="pendiente">Pendiente</option>
           </select>
-          <input 
-            type="text" 
-            className="form-control w-auto" 
-            placeholder="Buscar por número de habitación" 
-            onChange={e => handleFilterChange('search', e.target.value)} 
+          <input
+            type="text"
+            className="form-control w-auto"
+            placeholder="Buscar por número de habitación"
+            onChange={(e) => handleFilterChange("search", e.target.value)}
           />
         </div>
   
         {/* Listado de cabañas */}
-        <div id="roomList" className="row">
+        <div className="row">
           {filteredRooms.length === 0 ? (
             <p>No se encontraron cabañas que coincidan con los filtros.</p>
           ) : (
             filteredRooms.map((room) => (
-              <RoomCard key={room.number} room={room} />
+              <RoomCard key={room.number} room={room} onCardClick={handleCardClick} />
             ))
           )}
         </div>
+  
+        {/* Modal */}
+        {showModal && selectedRoom && (
+          <div
+            className="modal fade show"
+            style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+            onClick={handleCloseModal}
+          >
+            <div className="modal-dialog modal-lg" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Habitación {selectedRoom.number}</h5>
+                  <button type="button" className="btn-close" onClick={handleCloseModal}></button>
+                </div>
+                <div className="modal-body text-center">
+                  <img
+                    src={
+                      selectedRoom.status === "ocupado"
+                        ? RvigenteImage
+                        : selectedRoom.status === "pendiente"
+                        ? RpendienteImage
+                        : selectedRoom.image
+                    }
+                    alt={`Estado de la habitación: ${selectedRoom.status}`}
+                    className="img-fluid"
+                  />
+                  <p className="mt-3">
+                    Estado: <strong>{selectedRoom.status}</strong>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   };
