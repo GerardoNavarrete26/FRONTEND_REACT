@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect  } from 'react';
 import SuiteImage from '../../assets/Suite.jpg';
 import TainyImage from '../../assets/Tainy.jpg';
 import RvigenteImage from "../../assets/Rvigente.png";
 import RpendienteImage from "../../assets/Rpendientepago.png";
+import { useLocation } from "react-router-dom";
 import './ListaCabañas.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -19,21 +20,21 @@ const roomsData = [
   { number: "09", type: "suite", status: "ocupado", price: 91900, description: "Cabaña grande para 2 personas", image: SuiteImage },
   { number: "10", type: "suite", status: "pendiente", price: 91900, description: "Cabaña grande para 2 personas", image: SuiteImage },
   { number: "11", type: "tainycabin", status: "disponible", price: 160900, description: "Cabaña familiar 2 adultos 2 niños", image: TainyImage },
-  { number: "12", type: "tainycabin", status: "disponible", price: 160900, description: "Cabaña familiar 2 adultos 2 niños", image: TainyImage },
+  { number: "12", type: "tainycabin", status: "ocupado", price: 160900, description: "Cabaña familiar 2 adultos 2 niños", image: TainyImage },
   { number: "13", type: "tainycabin", status: "disponible", price: 160900, description: "Cabaña familiar 2 adultos 2 niños", image: TainyImage },
-  { number: "14", type: "tainycabin", status: "disponible", price: 160900, description: "Cabaña familiar 2 adultos 2 niños", image: TainyImage },
+  { number: "14", type: "tainycabin", status: "ocupado", price: 160900, description: "Cabaña familiar 2 adultos 2 niños", image: TainyImage },
   { number: "15", type: "tainycabin", status: "disponible", price: 160900, description: "Cabaña familiar 2 adultos 2 niños", image: TainyImage },
-  { number: "16", type: "tainycabin", status: "disponible", price: 160900, description: "Cabaña familiar 2 adultos 2 niños", image: TainyImage },
+  { number: "16", type: "tainycabin", status: "ocupado", price: 160900, description: "Cabaña familiar 2 adultos 2 niños", image: TainyImage },
   { number: "17", type: "tainycabin", status: "disponible", price: 160900, description: "Cabaña familiar 2 adultos 2 niños", image: TainyImage },
   { number: "18", type: "tainycabin", status: "disponible", price: 160900, description: "Cabaña familiar 2 adultos 2 niños", image: TainyImage },
   { number: "19", type: "tainycabin", status: "disponible", price: 160900, description: "Cabaña familiar 2 adultos 2 niños", image: TainyImage },
-  { number: "20", type: "tainycabin", status: "disponible", price: 160900, description: "Cabaña familiar 2 adultos 2 niños", image: TainyImage },
+  { number: "20", type: "tainycabin", status: "ocupado", price: 160900, description: "Cabaña familiar 2 adultos 2 niños", image: TainyImage },
 ];
 
 // Componente de tarjeta de habitación
 const RoomCard = ({ room, onCardClick }) => {
     return (
-      <div
+      <div 
         className="col-md-4 mb-4"
         onClick={() => onCardClick(room)} // Llama a la función para abrir el modal
         style={{ cursor: "pointer" }}
@@ -94,7 +95,18 @@ const handleCardClick = (room) => {
     };
 
     
-  
+    // Leer el parámetro 'search' de la URL al cargar la vista
+    useEffect(() => {
+      const params = new URLSearchParams(location.search); // Obtener los parámetros
+      const searchParam = params.get("search"); // Leer el valor de "search"
+      if (searchParam) {
+        setFilters((prevFilters) => ({
+          ...prevFilters,
+          search: searchParam, // Aplicar el número de la habitación al filtro de búsqueda
+        }));
+      }
+    }, [location.search]);
+
     // Función para actualizar los filtros
     const handleFilterChange = (filter, value) => {
       setFilters((prevFilters) => ({
@@ -112,7 +124,7 @@ const handleCardClick = (room) => {
     });
   
     return (
-      <div className="container">
+      <div className="content-lista">
         <h1 className="text-center mb-4">Listado de Cabañas</h1>
   
         {/* Filtros */}
@@ -139,6 +151,7 @@ const handleCardClick = (room) => {
             className="form-control w-auto"
             placeholder="Buscar por número de habitación"
             onChange={(e) => handleFilterChange("search", e.target.value)}
+            value={filters.search} // Mostrar el valor del filtro de búsqueda
           />
         </div>
   
