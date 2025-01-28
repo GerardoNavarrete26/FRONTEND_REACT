@@ -1,0 +1,88 @@
+/* Estilos generales */
+body {
+  background-color: white; /* Eliminar el fondo gris */
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Contenedor principal */
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centrar el contenido */
+  justify-content: center;
+  width: 100%;
+  padding: 20px;
+}
+
+/* Centrar el título */
+.titulo {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+/* Contenedor de los filtros */
+.buscadores-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 1000px; /* Para evitar que se expandan demasiado */
+}
+
+/* Estilo de cada buscador */
+.buscador {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Inputs */
+input[type="text"] {
+  padding: 8px;
+  width: 250px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: center;
+}
+
+/* Tabla */
+table {
+  width: 90%; /* Ocupar casi toda la pantalla */
+  max-width: 1200px;
+  border-collapse: collapse;
+}
+
+th, td {
+  text-align: center;
+  padding: 12px;
+  border: 1px solid #ddd;
+}
+
+th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.estado-filter {
+  width: 100%;
+  padding: 8px; /* Igual que los inputs */
+  font-size: 16px; /* Tamaño de fuente consistente */
+  border: 1px solid #ccc; /* Bordes similares */
+  border-radius: 4px; /* Esquinas redondeadas */
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Sombra interna */
+  background-color: #fff; /* Fondo blanco */
+  appearance: none; /* Quita los estilos predeterminados del navegador */
+}
+
+.estado-filter:focus {
+  outline: none; /* Elimina el contorno azul predeterminado */
+  border-color: #007bff; /* Color de borde de enfoque */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Efecto de enfoque */
+}
+
+
